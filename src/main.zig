@@ -3,7 +3,7 @@ const print = std.log.info;
 const day1 = @import("day01.zig");
 const day2 = @import("day02.zig");
 
-pub fn main() !void {  
+pub fn main() !void {
   print("day1 part1: {}", .{try day1.part1()});
   print("day1 part2: {}", .{try day1.part2()});
 
