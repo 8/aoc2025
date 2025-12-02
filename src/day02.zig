@@ -67,4 +67,65 @@ const Range = struct {
   }
 };
 
+pub fn part2() !i64 {
+  return part2_text(real_input);
+}
 
+fn part2_text(input: []const u8) !i64 {
+
+  var reader = std.Io.Reader.fixed(input);
+  var invalid: i64 = 0;
+
+  while (try reader.takeDelimiter(',')) |range_text| {
+    const range = try Range.init_from_string(range_text);
+    for (range.start..range.stop+1) |id| {
+      if (try is_invalid_id_2(@intCast(id))) {
+        invalid += @intCast(id);
+      }
+    }
+  }
+
+  return @intCast(invalid);
+}
+
+test "is_invalid_id_2" {
+  try std.testing.expect(try is_invalid_id_2(11));
+  try std.testing.expect(!try is_invalid_id_2(110));
+  try std.testing.expect(try is_invalid_id_2(111));
+  try std.testing.expect(try is_invalid_id_2(22));
+  try std.testing.expect(!try is_invalid_id_2(36));
+  try std.testing.expect(try is_invalid_id_2(123123123));
+  try std.testing.expect(try is_invalid_id_2(38593859));
+}
+
+fn is_invalid_id_2(id: u64) !bool {
+
+  var buf : [12]u8 = undefined;
+  const s = try std.fmt.bufPrint(&buf, "{}", .{id});
+
+  pc: for (2..s.len+1) |part_count| {
+    if (@mod(s.len, part_count) == 0) {
+
+      const part_len = s.len / part_count;
+      for (1..part_count) |part_index| {
+        const part_start = part_len*part_index;
+        const part_first = s[0..part_len];
+        const part_other = s[part_start..part_start+part_len];
+        const res = std.mem.eql(u8,part_first, part_other);
+        // std.debug.print("id: {}, part_count: {}, part_len: {}, part_start: {}, part_first: {s}, part_other: {s}, res: {}\n",
+        //   .{id, part_count, part_len, part_start, part_first, part_other, res});
+        if (!res) {
+          continue :pc;
+        }
+      }
+      return true;
+    }
+  }
+
+  return false;
+}
+
+test "part2" {
+  const result = try part2_text(test_input);
+  try std.testing.expectEqual(4174379265, result);
+}

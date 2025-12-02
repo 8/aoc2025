@@ -8,4 +8,5 @@ pub fn main() !void {
   print("day1 part2: {}", .{try day1.part2()});
 
   print("day2 part1: {}", .{try day2.part1()});
+  print("day2 part1: {}", .{try day2.part2()});
 }
