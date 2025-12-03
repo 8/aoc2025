@@ -12,4 +12,5 @@ pub fn main() !void {
   print("day2 part2: {}", .{try day2.part2()});
 
   print("day3 part1: {}", .{try day3.part1()});
+  print("day3 part2: {}", .{try day3.part2()});
 }
