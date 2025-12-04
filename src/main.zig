@@ -19,4 +19,5 @@ pub fn main() !void {
   defer _ = gpa.deinit();
 
   print("day4 part1: {}", .{try day4.part1(gpa.allocator())});
+  print("day4 part2: {}", .{try day4.part2(gpa.allocator())});
 }
