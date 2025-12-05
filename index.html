@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
-  <head></head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
   <body>
-    aoc2025 wasm
+    <h1>aoc2025 wasm</h1>
     <div id="c"></div>
   </body>
 
@@ -11,6 +14,7 @@
 
     const createItem = (name, f) => {
       const d = document.createElement('div')
+      d.className = 'export'
       c.appendChild(d)
 
       const l = document.createElement('label')
@@ -21,7 +25,12 @@
       b.innerText = name
       d.appendChild(b)
 
+      const lr = document.createElement('label')
+      lr.innerText = 'result:'
+      d.appendChild(lr)
+
       const r = document.createElement('input')
+      r.setAttribute("disabled", true)
       d.appendChild(r)
 
       b.onclick = async _ => r.value = await f()
@@ -38,4 +47,24 @@
       }
     })
   </script>
+
+  <style>
+    body {
+      font-family: monospace;
+    }
+    #c {
+      display: grid;
+      gap: 4px;
+    }
+    .export {
+      display: grid;
+      gap: 6px;
+      grid-auto-flow: column;
+      grid-auto-columns: min-content;
+    }
+    .export button {
+      min-width: 100px;
+    }
+  </style>
+
 </html>
