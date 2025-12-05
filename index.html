@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
   <body>
-    <h1>aoc2025 wasm</h1>
-    <div id="c"></div>
+    <div class="main">
+      <h1>aoc2025 wasm</h1>
+      <div id="c"></div>
+      <label>input:</label>
+      <textarea id="input"></textarea>
+    </div>
   </body>
 
   <script>
@@ -33,7 +37,10 @@
       r.setAttribute("disabled", true)
       d.appendChild(r)
 
-      b.onclick = async _ => r.value = await f()
+      b.onclick = async _ => {
+        const inputText = document.getElementById('input').value
+        r.value = await f()
+      }
     }
 
     const loadWasm = async (file, imports) => WebAssembly.instantiateStreaming(fetch(file), { env: imports })
@@ -49,12 +56,28 @@
   </script>
 
   <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
     body {
       font-family: monospace;
+    }
+    .main {
+      display: grid;
+      grid-template-rows: auto auto auto 1fr;
+      height: 100%;
+      padding: 2px;
+    }
+    h1 {
+      margin: 0;
     }
     #c {
       display: grid;
       gap: 4px;
+    }
+    #input {
+      white-space: pre-wrap;
     }
     .export {
       display: grid;
