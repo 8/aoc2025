@@ -32,3 +32,6 @@ export fn day4_part2() i64 {
 export fn day5_part1() u64 {
   return day5.part1(std.heap.wasm_allocator) catch 0;
 }
+export fn day5_part2() u64 {
+  return day5.part2(std.heap.wasm_allocator) catch 0;
+}

@@ -1,2 +1,2 @@
 #!/bin/bash
-zig build-exe ./src/wasm.zig -target wasm32-freestanding -OReleaseSmall -fno-entry --export=day1_part1 --export=day1_part2 --export=day2_part1 --export=day2_part2 --export=day3_part1 --export=day3_part2 --export=day4_part1 --export=day4_part2 --export=day5_part1
+zig build-exe ./src/wasm.zig -target wasm32-freestanding -OReleaseSmall -fno-entry --export=day1_part1 --export=day1_part2 --export=day2_part1 --export=day2_part2 --export=day3_part1 --export=day3_part2 --export=day4_part1 --export=day4_part2 --export=day5_part1 --export=day5_part2
