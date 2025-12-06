@@ -35,11 +35,11 @@ pub fn part1_text(input: []const u8, allocator: Allocator) !u64 {
   var word_list = std.ArrayList([] const u8).empty;
   defer word_list.deinit(allocator);
 
-  var col_count: u64 = 0;
+  var col_count: u32 = 0;
   var line_reader = std.Io.Reader.fixed(input);
   while (try line_reader.takeDelimiter('\n')) |line| {
     var word_reader = std.Io.Reader.fixed(line);
-    var word_count: u64 = 0;
+    var word_count: u32 = 0;
     while (try word_reader.takeDelimiter(' ')) |word| {
       if (word.len > 0) {
         try word_list.append(allocator, word);

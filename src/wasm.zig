@@ -5,6 +5,7 @@ const day2 = @import("day02.zig");
 const day3 = @import("day03.zig");
 const day4 = @import("day04.zig");
 const day5 = @import("day05.zig");
+const day6 = @import("day06.zig");
 
 extern fn printNumber(n: i64) void;
 extern fn printString(s: [*]const u8, len: usize) void;
@@ -19,52 +20,57 @@ fn prepareText(input:[*]u8, len: usize) []const u8 {
 }
 
 export fn day1_part1_text(input: [*]u8, len: usize) i64 {
-  const text= prepareText(input, len);
+  const text = prepareText(input, len);
   defer allocator.free(text);
   return day1.part1_text(text) catch -1;
 }
 export fn day1_part2_text(input: [*]u8, len: usize) i64 {
-  const text= prepareText(input, len);
+  const text = prepareText(input, len);
   defer allocator.free(text);
   return day1.part2_text(text) catch -1;
 }
 export fn day2_part1_text(input: [*]u8, len: usize) i64 {
-  const text= prepareText(input, len);
+  const text = prepareText(input, len);
   defer allocator.free(text);
   return day2.part1_text(text) catch -1;
 }
 export fn day2_part2_text(input: [*]u8, len: usize) i64 {
-  const text= prepareText(input, len);
+  const text = prepareText(input, len);
   defer allocator.free(text);
   return day2.part2_text(text) catch -1;
 }
 export fn day3_part1_text(input: [*]u8, len: usize) i64 {
-  const text= prepareText(input, len);
+  const text = prepareText(input, len);
   defer allocator.free(text);
   return day3.part1_text(text) catch -1;
 }
 export fn day3_part2_text(input: [*]u8, len: usize) i64 {
-  const text= prepareText(input, len);
+  const text = prepareText(input, len);
   defer allocator.free(text);
   return day3.part2_text(text) catch -1;
 }
 export fn day4_part1_text(input: [*]u8, len: usize) i64 {
-  const text= prepareText(input, len);
+  const text = prepareText(input, len);
   defer allocator.free(text);
   return day4.part1_text(text, allocator) catch -1;
 }
 export fn day4_part2_text(input: [*]u8, len: usize) i64 {
-  const text= prepareText(input, len);
+  const text = prepareText(input, len);
   defer allocator.free(text);
   return day4.part2_text(text, allocator) catch -1;
 }
 export fn day5_part1_text(input: [*]u8, len: usize) u64 {
-  const text= prepareText(input, len);
+  const text = prepareText(input, len);
   defer allocator.free(text);
   return day5.part1_text(text, allocator) catch 0;
 }
 export fn day5_part2_text(input: [*]u8, len: usize) u64 {
-  const text= prepareText(input, len);
+  const text = prepareText(input, len);
   defer allocator.free(text);
   return day5.part2_text(text, allocator) catch 0;
+}
+export fn day6_part1_text(input: [*]u8, len: usize) u64 {
+  const text = prepareText(input, len);
+  defer allocator.free(text);
+  return day6.part1_text(text, allocator) catch 0;
 }
