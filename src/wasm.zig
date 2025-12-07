@@ -74,3 +74,8 @@ export fn day6_part1_text(input: [*]u8, len: usize) u64 {
   defer allocator.free(text);
   return day6.part1_text(text, allocator) catch 0;
 }
+export fn day6_part2_text(input: [*]u8, len: usize) u64 {
+  const text = prepareText(input, len);
+  defer allocator.free(text);
+  return day6.part2_text(text, allocator) catch 0;
+}
