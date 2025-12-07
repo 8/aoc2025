@@ -6,6 +6,7 @@ const day3 = @import("day03.zig");
 const day4 = @import("day04.zig");
 const day5 = @import("day05.zig");
 const day6 = @import("day06.zig");
+const day7 = @import("day07.zig");
 
 pub fn main() !void {
   var gpa = std.heap.GeneralPurposeAllocator(.{}){};
@@ -28,4 +29,6 @@ pub fn main() !void {
 
   print("day6 part1: {}", .{try day6.part1(gpa.allocator())});
   print("day6 part2: {}", .{try day6.part2(gpa.allocator())});
+
+  print("day7 part1: {}", .{try day7.part1(gpa.allocator())});
 }
