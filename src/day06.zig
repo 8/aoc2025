@@ -1,5 +1,7 @@
 const std = @import("std");
 const Allocator = std.mem.Allocator;
+const ArrayList = std.ArrayList;
+const Reader = std.io.Reader;
 const expectEqual = std.testing.expectEqual;
 
 const test_input =
@@ -71,6 +73,81 @@ pub fn part1_text(input: []const u8, allocator: Allocator) !u64 {
     }
 
     result += item_result;
+  }
+
+  return result;
+}
+
+pub fn part2(allocator: Allocator) !u64 {
+  return part2_text(real_input, allocator);
+}
+
+test "part2" {
+  try expectEqual(3263827, try part2_text(test_input, std.testing.allocator));
+}
+
+pub fn part2_text(text: []const u8, allocator: Allocator) !u64 {
+
+  var arena = std.heap.ArenaAllocator.init(allocator);
+  defer arena.deinit();
+  const a = arena.allocator();
+
+  var line_list = ArrayList([]const u8).empty;
+  defer line_list.deinit(a);
+
+  var line_reader = Reader.fixed(text);
+  while (try line_reader.takeDelimiter('\n')) |line| {
+    try line_list.append(a, line);
+  }
+
+  const lines = line_list.items;
+
+  var result: u64 = 0;
+
+  // process them via the operator line
+  const op_line = lines[lines.len-1];
+
+  const OpPos = struct {
+    op: Op,
+    x: u32,
+  };
+
+  var op_list: ArrayList(OpPos) = .empty;
+
+  for (op_line, 0..) |c, i| {
+    if (Op.init_string(c) catch null) |op| {
+      try op_list.append(a, .{.op = op, .x = @intCast(i)});
+    }
+  }
+
+  for (op_list.items, 0..) |op, op_i| {
+    const op_next : ?OpPos = if (op_list.items.len > op_i+1) op_list.items[op_i+1] else null;
+    const col_start = op.x;
+    const col_end = if (op_next) |o| o.x-1 else lines[0].len;
+
+    var op_result: u64 = if (op.op == Op.add) 0 else 1;
+
+    for (col_start..col_end) |col|{
+      var buf: [10]u8 = undefined;
+      const l = lines.len-1;
+      var buf_i: usize = 0;
+      for (0..l) |y| {
+        const c = lines[y][col];
+        if (c != ' ') {
+          buf[buf_i] = c;
+          buf_i += 1;
+        }
+      }
+      const n_s = buf[0..buf_i];
+      const n = try std.fmt.parseInt(u32, n_s, 10);
+
+      if (op.op == Op.add) {
+        op_result += n;
+      } else {
+        op_result *= n;
+      }
+    }
+    result += op_result;
   }
 
   return result;

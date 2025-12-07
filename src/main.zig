@@ -8,6 +8,9 @@ const day5 = @import("day05.zig");
 const day6 = @import("day06.zig");
 
 pub fn main() !void {
+  var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+  defer _ = gpa.deinit();
+
   print("day1 part1: {}", .{try day1.part1()});
   print("day1 part2: {}", .{try day1.part2()});
 
@@ -17,9 +20,6 @@ pub fn main() !void {
   print("day3 part1: {}", .{try day3.part1()});
   print("day3 part2: {}", .{try day3.part2()});
 
-  var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-  defer _ = gpa.deinit();
-
   print("day4 part1: {}", .{try day4.part1(gpa.allocator())});
   print("day4 part2: {}", .{try day4.part2(gpa.allocator())});
 
@@ -27,4 +27,5 @@ pub fn main() !void {
   print("day5 part2: {}", .{try day5.part2(gpa.allocator())});
 
   print("day6 part1: {}", .{try day6.part1(gpa.allocator())});
+  print("day6 part2: {}", .{try day6.part2(gpa.allocator())});
 }
