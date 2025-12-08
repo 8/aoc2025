@@ -118,7 +118,7 @@ pub fn part2_text(allocator: Allocator, input: []const u8) !u64 {
     }
   };
 
-  var timelines_lookup = std.AutoHashMap(Pos, usize).init(allocator);
+  var timelines_lookup = std.AutoHashMap(Pos, u64).init(allocator);
   defer timelines_lookup.deinit();
 
   for (lines, 0..) |line, y| {
