@@ -99,15 +99,12 @@ test "part2" {
 
 pub fn part2_text(allocator: Allocator, input: []const u8) !u64 {
 
-  var arena = std.heap.ArenaAllocator.init(allocator);
-  defer arena.deinit();
-  var a = arena.allocator();
-
   var lines_list = std.ArrayList([]u8).empty;
+  defer lines_list.deinit(allocator);
 
   var reader = std.Io.Reader.fixed(input);
   while (try reader.takeDelimiter('\n')) |line| {
-    try lines_list.append(a, try a.dupe(u8, line));
+    try lines_list.append(allocator, line);
   }
 
   const lines = lines_list.items;
