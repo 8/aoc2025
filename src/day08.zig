@@ -102,9 +102,6 @@ pub fn part1_text(allocator: Allocator, input: []const u8, connect_count: u32) !
     try pos_list.append(a, pos);
   }
 
-  // const positions = pos_list.items;
-  // print("{}\n", .{ positions.len });
-
   // create pairs
   var pair_list = std.ArrayList(Pair).empty;
   defer pair_list.deinit(a);
@@ -120,7 +117,6 @@ pub fn part1_text(allocator: Allocator, input: []const u8, connect_count: u32) !
     defer other_list.deinit(a);
 
     while (other_list.pop()) |other| : (i+=1) {
-
       const dist = pos.getDist(&other);
 
       if (dist > 0 and !dist_lookup.contains(dist)) {
@@ -138,12 +134,6 @@ pub fn part1_text(allocator: Allocator, input: []const u8, connect_count: u32) !
 
   // sort
   std.mem.sort(Pair, pair_list.items, {}, Pair.sort);
-
-  // print("len: {}\n", .{pair_list.items.len});
-
-  // for (0..connect_count) |p_i|{
-  //   print("{}: {}\n", .{p_i, pair_list.items[p_i]});
-  // }
 
   const closest_pairs = pair_list.items[0..connect_count];
 
@@ -166,65 +156,40 @@ pub fn part1_text(allocator: Allocator, input: []const u8, connect_count: u32) !
 
     // combine them
     if (maybe_c1 != null and maybe_c2 != null) {
-
+      // but not if they are already combined...
       if (maybe_c1 != maybe_c2) {
+        const c2 = maybe_c2.?;
+        var iterator = c2.iterator();
+        while (iterator.next()) |pos|  {
+          try maybe_c1.?.put(pos.key_ptr.*, {});
+        }
 
-
-      // print("combine them\n",.{});
-      // print ("circuit_list.count: {}\n", .{circuit_list.items.len});
-      // print ("maybe_c1.count: {}\n", .{maybe_c1.?.count()});
-
-      const c2 = maybe_c2.?;
-      var iterator = c2.iterator();
-      while (iterator.next()) |pos|  {
-        try maybe_c1.?.put(pos.key_ptr.*, {});
-      }
-
-      for (circuit_list.items, 0..) |*c, ii| {
-        if (c == c2) {
-          _ = circuit_list.orderedRemove(ii);
-          break;
+        for (circuit_list.items, 0..) |*c, ii| {
+          if (c == c2) {
+            _ = circuit_list.orderedRemove(ii);
+            break;
+          }
         }
       }
-
-      // print ("maybe_c1.count: {}\n", .{maybe_c1.?.count()});
-      // print ("circuit_list.count: {}\n", .{circuit_list.items.len});
-      }
-
     } else if (maybe_c1) |c1| {
-      // print("adding p2 {}\n", .{pair.p2});
       try c1.put(pair.p2, {});
     } else if (maybe_c2) |c2|{
-      // print("adding p1 {}\n", .{pair.p1});
       try c2.put(pair.p1, {});
     } else {
-
       // create a new circuit
       var circuit : Circuit = .init(a);
       try circuit.put(pair.p1, {});
       try circuit.put(pair.p2, {});
       try circuit_list.append(a, circuit);
-
-      // print("created new circuit\n", .{});
     }
   }
 
   // sort the circuits by length
   std.mem.sort(Circuit, circuit_list.items, {}, sortCircuit);
 
-  // for (circuit_list.items) |circuit| {
-    // print("circuit: {}\n", .{circuit.count()});
-    // var iterator = circuit.iterator();
-    // while (iterator.next()) |pos| {
-    //   print("{}\n",.{pos});
-    // }
-    // print("\n", .{});
-  // }
-
   // multiply the largest 3 circuits
   var total: u64 = 1;
   for (circuit_list.items[0..3]) |circuit| {
-    // print("{}\n", .{circuit});
     total *= circuit.count();
   }
 
