@@ -105,30 +105,15 @@ pub fn part1_text(allocator: Allocator, input: []const u8, connect_count: u32) !
   // create pairs
   var pair_list = std.ArrayList(Pair).empty;
   defer pair_list.deinit(a);
-
-  var i: u64 = 0;
-
-  var dist_lookup = std.AutoHashMap(i64, void).init(a);
-  defer dist_lookup.deinit();
-
-  for (pos_list.items) |pos| {
-
-    var other_list = try pos_list.clone(a);
-    defer other_list.deinit(a);
-
-    while (other_list.pop()) |other| : (i+=1) {
-      const dist = pos.getDist(&other);
-
-      if (dist > 0 and !dist_lookup.contains(dist)) {
-        try dist_lookup.put(dist, {});
-        const pair: Pair = .{
-          .p1 = pos,
-          .p2 = other,
-          .dist = dist,
-        };
-
-        try pair_list.append(a, pair);
-      }
+  for (pos_list.items, 0..) |p1, i| {
+    for (pos_list.items[i+1..]) |p2| {
+      const dist = p1.getDist(&p2);
+      const pair: Pair = .{
+        .p1 = p1,
+        .p2 = p2,
+        .dist = dist,
+      };
+      try pair_list.append(a, pair);
     }
   }
 
