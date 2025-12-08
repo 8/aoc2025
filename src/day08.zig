@@ -170,7 +170,7 @@ pub fn part1_text(allocator: Allocator, input: []const u8, connect_count: u32) !
       if (maybe_c1 != maybe_c2) {
 
 
-      print("combine them\n",.{});
+      // print("combine them\n",.{});
       // print ("circuit_list.count: {}\n", .{circuit_list.items.len});
       // print ("maybe_c1.count: {}\n", .{maybe_c1.?.count()});
 
