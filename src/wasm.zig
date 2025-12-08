@@ -7,6 +7,7 @@ const day4 = @import("day04.zig");
 const day5 = @import("day05.zig");
 const day6 = @import("day06.zig");
 const day7 = @import("day07.zig");
+const day8 = @import("day08.zig");
 
 extern fn printNumber(n: i64) void;
 extern fn printString(s: [*]const u8, len: usize) void;
@@ -89,4 +90,9 @@ export fn day7_part2_text(input: [*]u8, len: usize) u64 {
   const text = prepareText(input, len);
   defer allocator.free(text);
   return day7.part2_text(allocator, text) catch 0;
+}
+export fn day8_part1_text(input: [*]u8, len: usize) u64 {
+  const text = prepareText(input, len);
+  defer allocator.free(text);
+  return day8.part1_text(allocator, text, 1000) catch 0;
 }
