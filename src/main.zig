@@ -36,6 +36,7 @@ pub fn main() !void {
   print("day7 part2: {}", .{try day7.part2(gpa.allocator())});
 
   print("day8 part1: {}", .{try day8.part1(gpa.allocator())});
+  print("day8 part2: {}", .{try day8.part2(gpa.allocator())});
 
   print("day9 part1: {}", .{try day9.part1(gpa.allocator())});
 }

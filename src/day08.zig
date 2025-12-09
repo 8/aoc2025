@@ -181,3 +181,106 @@ pub fn part1_text(allocator: Allocator, input: []const u8, connect_count: u32) !
   return total;
 }
 
+test "part2" {
+  try std.testing.expectEqual(25272, try part2_text(std.testing.allocator, test_input));
+}
+
+pub fn part2(allocator: Allocator) !u64 {
+  return part2_text(allocator, real_input);
+}
+
+pub fn part2_text(allocator: Allocator, input: []const u8) !u64 {
+
+  var arena = std.heap.ArenaAllocator.init(allocator);
+  defer arena.deinit();
+  const a = arena.allocator();
+
+  // create list of positions
+  var pos_list = std.ArrayList(Pos).empty;
+  defer pos_list.deinit(a);
+
+  var reader = std.Io.Reader.fixed(input);
+  while (try reader.takeDelimiter('\n')) |line| {
+    const pos = try Pos.init_from_line(line);
+    try pos_list.append(a, pos);
+  }
+
+  // create pairs of the positions
+  var pair_list = std.ArrayList(Pair).empty;
+  defer pair_list.deinit(a);
+  for (pos_list.items, 0..) |p1, i| {
+    for (pos_list.items[i+1..]) |p2| {
+      const dist = p1.getDist(&p2);
+      const pair: Pair = .{
+        .p1 = p1,
+        .p2 = p2,
+        .dist = dist,
+      };
+      try pair_list.append(a, pair);
+    }
+  }
+
+  // sort the pairs according to their distance
+  std.mem.sort(Pair, pair_list.items, {}, Pair.sort);
+
+  var circuit_list = std.ArrayList(Circuit).empty;
+  defer circuit_list.deinit(a);
+
+  // search for the last pair that joins all circuits
+  var last_pair: ?Pair = null;
+
+  for (pair_list.items) |pair| {
+
+    // print("combining: {}\n", .{pair});
+
+    var maybe_c1: ?*Circuit = null;
+    var maybe_c2: ?*Circuit = null;
+
+    // get the circuits that contain the pair
+    for (circuit_list.items) |*circuit|{
+      if (circuit.contains(pair.p1)) {
+        maybe_c1 = circuit;
+      }
+      if (circuit.contains(pair.p2)) {
+        maybe_c2 = circuit;
+      }
+    }
+
+    if (maybe_c1 != null and maybe_c2 != null) {
+      // combine the circuits if they are not already combined
+      if (maybe_c1 != maybe_c2) {
+        const c2 = maybe_c2.?;
+        var iterator = c2.iterator();
+        while (iterator.next()) |pos|  {
+          try maybe_c1.?.put(pos.key_ptr.*, {});
+        }
+        for (circuit_list.items, 0..) |*c, ii| {
+          if (c == c2) {
+            _ = circuit_list.orderedRemove(ii);
+            break;
+          }
+        }
+        last_pair = pair;
+      }
+    } else if (maybe_c1) |c1| {
+      try c1.put(pair.p2, {});
+      last_pair = pair;
+    } else if (maybe_c2) |c2|{
+      try c2.put(pair.p1, {});
+      last_pair = pair;
+    } else {
+      // create a new circuit
+      var circuit : Circuit = .init(a);
+      try circuit.put(pair.p1, {});
+      try circuit.put(pair.p2, {});
+      try circuit_list.append(a, circuit);
+    }
+
+  }
+
+  // print("circuits.len: {}\n", .{circuit_list.items.len});
+  // print("last_pair: {?}\n", .{last_pair});
+  const result = last_pair.?.p1.x * last_pair.?.p2.x;
+
+  return @intCast(result);
+}

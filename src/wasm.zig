@@ -97,6 +97,11 @@ export fn day8_part1_text(input: [*]u8, len: usize) u64 {
   defer allocator.free(text);
   return day8.part1_text(allocator, text, 1000) catch 0;
 }
+export fn day8_part2_text(input: [*]u8, len: usize) u64 {
+  const text = prepareText(input, len);
+  defer allocator.free(text);
+  return day8.part2_text(allocator, text) catch 0;
+}
 export fn day9_part1_text(input: [*]u8, len: usize) u64 {
   const text = prepareText(input, len);
   defer allocator.free(text);
