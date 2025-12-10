@@ -57,11 +57,6 @@ pub fn part1_text(allocator: Allocator, input: []const u8) !u64 {
 
   const positions = pos_list.items;
 
-  // print the input
-  // print("pos_list.len {}\n", .{positions.len});
-  // for (positions) |pos| {
-  //   print("position: {}\n", .{pos});
-  // }
   var area_max: u64 = 0;
 
   // combine them pair wise and calculate their area, biggest area wins
@@ -79,4 +74,3 @@ pub fn part1_text(allocator: Allocator, input: []const u8) !u64 {
 
   return area_max;
 }
-
