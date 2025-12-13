@@ -16,10 +16,13 @@ const test_input =
   \\iii: out
 ;
 
+const real_input = @embedFile("11.txt");
+
+const OutputList = std.ArrayList([]const u8);
+
 const InputOutputMap = struct {
   const Self = @This();
 
-  const OutputList = std.ArrayList([]const u8);
   const Inner = std.StringArrayHashMap(OutputList);
 
   inner: Inner,
@@ -76,18 +79,40 @@ test "InputOutpuMap" {
 
 test "part1" {
   const result = try part1_text(std.testing.allocator, test_input);
-  _ = result;
+  try std.testing.expectEqual(5, result);
 }
 
+pub fn part1(allocator: Allocator) !u64 {
+  return part1_text(allocator, real_input);
+}
 pub fn part1_text(allocator: Allocator, input: []const u8) !u64 {
 
-  var io: InputOutputMap = try .init(allocator, input);
+  var arena = std.heap.ArenaAllocator.init(allocator);
+  defer arena.deinit();
+  const a = arena.allocator();
+
+  var io: InputOutputMap = try .init(a, input);
   defer io.deinit();
 
-  var it = io.inner.iterator();
-  while (it.next()) |i| {
-    print("{s}: {}\n", .{i.key_ptr.*, i.value_ptr.*.items.len});
+  var queue: std.ArrayList(OutputList) = .empty;
+
+  const you_list = io.inner.get("you") orelse return error.NoYouFound;
+  try queue.append(a, you_list);
+
+  var count: u64 = 0;
+  while (queue.pop()) |outputs| {
+
+    for (outputs.items) |output| {
+
+      if (io.inner.get(output)) |to_list| {
+        try queue.append(a, to_list);
+      }
+      
+      if (std.mem.eql(u8, output, "out")) {
+        count += 1;
+      } 
+    }
   }
 
-  return 0;
+  return count;
 }
