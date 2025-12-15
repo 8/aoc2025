@@ -3,20 +3,71 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advent of Code 2025 - WASM Runner</title>
   </head>
   <body>
+    <canvas id="snowflakes"></canvas>
     <div class="main">
-      <h1>aoc2025 wasm</h1>
+      <h1>🎄 Advent of Code 2025 🎄</h1>
+      <div class="subtitle">WebAssembly Puzzle Runner</div>
       <div id="c"></div>
-      <div>
-        <label>input</label>
+      <div class="input-header">
+        <label>Puzzle Input</label>
         <button onclick="document.getElementById('input').value = ''">Clear</button>
       </div>
-      <textarea id="input" placeholder="Paste your puzzle input here"></textarea>
+      <textarea id="input" placeholder="Paste your puzzle input here..."></textarea>
     </div>
   </body>
 
   <script>
+    // Snowflakes animation
+    const canvas = document.getElementById('snowflakes');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const snowflakes = [];
+    for (let i = 0; i < 100; i++) {
+      snowflakes.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 3 + 1,
+        speed: Math.random() * 1 + 0.5,
+        drift: Math.random() * 0.5 - 0.25
+      });
+    }
+
+    function drawSnowflakes() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.beginPath();
+      for (let flake of snowflakes) {
+        ctx.moveTo(flake.x, flake.y);
+        ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+      }
+      ctx.fill();
+      updateSnowflakes();
+    }
+
+    function updateSnowflakes() {
+      for (let flake of snowflakes) {
+        flake.y += flake.speed;
+        flake.x += flake.drift;
+        if (flake.y > canvas.height) {
+          flake.y = 0;
+          flake.x = Math.random() * canvas.width;
+        }
+      }
+    }
+
+    setInterval(drawSnowflakes, 50);
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // WASM functionality
     const c = document.getElementById('c')
 
     const createItem = (name, f, memory) => {
@@ -76,37 +127,204 @@
   </script>
 
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
     html, body {
       height: 100%;
       margin: 0;
+      overflow: hidden;
     }
+
     body {
-      font-family: monospace;
+      font-family: 'Courier New', monospace;
+      background: linear-gradient(135deg, #1a472a 0%, #0f2027 50%, #2c5364 100%);
+      position: relative;
     }
-    .main {
-      display: grid;
-      grid-template-rows: auto auto auto 1fr;
+
+    #snowflakes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
       height: 100%;
-      padding: 2px;
+      pointer-events: none;
+      z-index: 0;
     }
+
+    .main {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-rows: auto auto auto auto 1fr;
+      height: 100%;
+      padding: 20px;
+      gap: 16px;
+      overflow-y: auto;
+    }
+
     h1 {
       margin: 0;
+      font-family: 'Mountains of Christmas', cursive;
+      font-size: 3em;
+      font-weight: 700;
+      text-align: center;
+      background: linear-gradient(45deg, #ff0000, #00ff00, #ffaa00, #ff0000);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: festiveGlow 3s ease infinite;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+      filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.7));
     }
+
+    @keyframes festiveGlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #ffd700;
+      font-size: 1.2em;
+      font-weight: bold;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+      margin-top: -10px;
+    }
+
     #c {
       display: grid;
-      gap: 4px;
+      gap: 8px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
+
+    .input-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 8px;
+    }
+
+    .input-header label {
+      color: #ffd700;
+      font-weight: bold;
+      font-size: 1.1em;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+    .input-header button {
+      background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(196, 30, 58, 0.4);
+    }
+
+    .input-header button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(196, 30, 58, 0.6);
+      background: linear-gradient(135deg, #d41e3a 0%, #9b0000 100%);
+    }
+
     #input {
       white-space: pre-wrap;
+      font-family: 'Courier New', monospace;
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid #ffd700;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 14px;
+      resize: vertical;
+      min-height: 150px;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
     }
+
+    #input:focus {
+      outline: none;
+      border-color: #ffaa00;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    }
+
     .export {
       display: grid;
-      gap: 6px;
+      gap: 10px;
       grid-auto-flow: column;
       grid-auto-columns: min-content;
+      align-items: center;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      transition: all 0.3s ease;
     }
+
+    .export:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 215, 0, 0.4);
+      transform: translateX(5px);
+    }
+
+    .export label {
+      color: #fff;
+      font-weight: bold;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
     .export button {
       min-width: 120px;
+      background: linear-gradient(135deg, #00a86b 0%, #006400 100%);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 168, 107, 0.4);
+    }
+
+    .export button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 168, 107, 0.6);
+      background: linear-gradient(135deg, #00b87b 0%, #007400 100%);
+    }
+
+    .export input {
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid rgba(255, 215, 0, 0.4);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-family: 'Courier New', monospace;
+      min-width: 200px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2em;
+      }
+      .main {
+        padding: 10px;
+      }
+      .export {
+        grid-auto-flow: row;
+        grid-auto-columns: auto;
+      }
     }
   </style>
 
